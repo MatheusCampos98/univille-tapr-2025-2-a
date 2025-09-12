@@ -26,7 +26,6 @@ public class TokenHash {
         return new TokenHash(hash);
     }
 
-    /** Hash a raw refresh token string using SHA-256 + Base64URL (no padding) */
     public static TokenHash ofPlainText(String raw) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");

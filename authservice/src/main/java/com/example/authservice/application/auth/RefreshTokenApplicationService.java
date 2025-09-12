@@ -27,14 +27,12 @@ public class RefreshTokenApplicationService {
     private final JwtProperties props;
     private final SecureRandom random = new SecureRandom();
 
-    /** Generate a cryptographically-strong refresh token string */
     private String generateRawRefreshToken() {
-        byte[] bytes = new byte[64]; // 512-bit token
+        byte[] bytes = new byte[64]; 
         random.nextBytes(bytes);
         return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
     }
 
-    /** Create and persist a refresh token for a user, returns the raw value to return to client */
     @Transactional
     public String issueFor(User user) {
         String raw = generateRawRefreshToken();
@@ -46,7 +44,6 @@ public class RefreshTokenApplicationService {
         return raw;
     }
 
-    /** Validate refresh token and rotate: revoke old, mint new access + refresh tokens */
     @Transactional
     public TokenResponse refresh(String rawRefreshToken) {
         var hash = TokenHash.ofPlainText(rawRefreshToken).getValue();
@@ -59,17 +56,14 @@ public class RefreshTokenApplicationService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Refresh token inválido ou expirado");
         }
 
-        // Access token
         TokenService.TokenPair accessPair = tokenService.issue(stored.getUser());
 
-        // Rotate refresh: revoke old and issue a new one
         repository.revoke(stored.getId());
         String newRefresh = issueFor(stored.getUser());
 
         return new TokenResponse(accessPair.accessToken(), newRefresh, accessPair.expiresInSeconds());
     }
 
-    /** Logout: revoke current refresh token so it can't be used again */
     @Transactional
     public void logout(String rawRefreshToken) {
         var hash = TokenHash.ofPlainText(rawRefreshToken).getValue();

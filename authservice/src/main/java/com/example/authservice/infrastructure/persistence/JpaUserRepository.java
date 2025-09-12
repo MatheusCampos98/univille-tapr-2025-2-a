@@ -2,7 +2,6 @@ package com.example.authservice.infrastructure.persistence;
 
 import com.example.authservice.domain.user.User;
 import com.example.authservice.domain.user.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;

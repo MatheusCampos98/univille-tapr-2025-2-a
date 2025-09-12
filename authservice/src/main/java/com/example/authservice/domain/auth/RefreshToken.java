@@ -1,7 +1,5 @@
 package com.example.authservice.domain.auth;
 
-import com.example.authservice.domain.auth.ExpiresAt;
-import com.example.authservice.domain.auth.TokenHash;
 import com.example.authservice.domain.user.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
